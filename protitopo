@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café Colonial - Pedidos en Línea</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdfbf7',
+                            100: '#f7f2e8',
+                            200: '#ede2d0',
+                            300: '#dec7a7',
+                            400: '#ceaa7b',
+                            500: '#bd8e55',
+                            600: '#a57345',
+                            700: '#865939',
+                            800: '#6d4732',
+                            900: '#593a2b',
+                            950: '#321f17',
+                        },
+                        gold: {
+                            400: '#f1c40f',
+                            500: '#d4af37',
+                            600: '#aa8c2c',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f7f2e8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ceaa7b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a57345;
+        }
+        .wood-pattern {
+            background-color: #321f17;
+            background-image: radial-gradient(#593a2b 0.75px, transparent 0.75px), radial-gradient(#593a2b 0.75px, #321f17 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+    </style>
+</head>
+<body class="bg-brand-50 text-brand-950 font-sans min-h-screen flex flex-col pb-20 lg:pb-0">
+
+    <!-- Encabezado Principal -->
+    <header class="bg-brand-950 text-brand-100 shadow-xl border-b-2 border-gold-500 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center justify-between">
+                
+                <!-- Logo & Nombre -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-11 h-11 rounded-full bg-gradient-to-br from-gold-500 to-brand-700 flex items-center justify-center text-brand-950 text-2xl shadow-md border border-gold-400">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-serif text-2xl sm:text-3xl font-bold tracking-wide text-brand-100">Café Colonial</h1>
+                        <p class="text-xs text-brand-300 tracking-widest uppercase font-medium">Desde 1948 • Tradición & Sabor</p>
+                    </div>
+                </div>
+
+                <!-- Info Horario & Contacto (Desktop) -->
+                <div class="hidden md:flex items-center space-x-6 text-xs text-brand-200 border-l border-brand-800 pl-6">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-regular fa-clock text-gold-500 text-base"></i>
+                        <div>
+                            <p class="font-semibold text-brand-100">Horario de Atención</p>
+                            <p class="text-brand-300">Lun - Dom: 7:00 AM - 10:00 PM</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-location-dot text-gold-500 text-base"></i>
+                        <div>
+                            <p class="font-semibold text-brand-100">Ubicación</p>
+                            <p class="text-brand-300">Centro Histórico, Portal #12</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Carrito (Rápido) -->
+                <button onclick="toggleCartModal()" class="relative bg-brand-800 hover:bg-brand-700 border border-brand-600 px-4 py-2.5 rounded-xl transition duration-200 flex items-center space-x-3 shadow-inner group">
+                    <div class="relative">
+                        <i class="fa-solid fa-shopping-bag text-gold-500 text-xl group-hover:scale-110 transition-transform"></i>
+                        <span id="cart-badge" class="hidden absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-brand-950">0</span>
+                    </div>
+                    <div class="text-left hidden sm:block">
+                        <p class="text-[10px] uppercase tracking-wider text-brand-300 font-medium">Mi Pedido</p>
+                        <p id="cart-header-total" class="text-sm font-bold text-gold-400">$0.00</p>
+                    </div>
+                </button>
+
+            </div>
+        </div>
+        <!-- Banner Secundario móvil para horarios -->
+        <div class="bg-brand-900 py-1.5 px-4 text-center text-xs text-brand-300 md:hidden flex justify-between items-center border-t border-brand-800/50">
+            <span><i class="fa-regular fa-clock text-gold-500 mr-1"></i> Abierto hoy hasta las 10:00 PM</span>
+            <span class="text-gold-400 font-medium"><i class="fa-solid fa-phone mr-1"></i> 55 1234 5678</span>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- Hero / Banner de Bienvenida -->
+        <div class="relative rounded-2xl overflow-hidden shadow-lg mb-8 wood-pattern text-white p-6 sm:p-10 border border-brand-700 flex flex-col md:flex-row items-center justify-between">
+            <div class="relative z-10 max-w-xl text-center md:text-left mb-6 md:mb-0">
+                <span class="inline-block bg-gold-500/20 text-gold-400 border border-gold-500/40 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold mb-3">
+                    <i class="fa-solid fa-crown mr-1"></i> Tradición Artesanal
+                </span>
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-brand-100">
+                    El auténtico aroma del café de antaño
+                </h2>
+                <p class="mt-3 text-brand-200 text-sm sm:text-base font-light">
+                    Disfruta de nuestros granos selectos tostados en casa, recetas tradicionales de panadería y la calidez de siempre.
+                </p>
+            </div>
+            <div class="relative z-10 flex items-center space-x-4 bg-brand-900/80 p-4 rounded-xl border border-brand-700 backdrop-blur-sm">
+                <div class="text-center px-3 border-r border-brand-700">
+                    <i class="fa-solid fa-fire text-amber-500 text-2xl mb-1"></i>
+                    <p class="text-xs text-brand-300">Café de Olla</p>
+                    <p class="text-xs font-bold text-gold-400">Receta de la Abuela</p>
+                </div>
+                <div class="text-center px-3">
+                    <i class="fa-solid fa-bread-slice text-amber-400 text-2xl mb-1"></i>
+                    <p class="text-xs text-brand-300">Pan Dulce</p>
+                    <p class="text-xs font-bold text-gold-400">Recién Horneado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros de Categorías -->
+        <nav class="sticky top-[69px] z-20 bg-brand-50/95 backdrop-blur-md py-3 mb-6 -mx-4 px-4 border-b border-brand-200 shadow-sm">
+            <div class="flex items-center space-x-2 sm:space-x-3 overflow-x-auto no-scrollbar pb-1">
+                <button onclick="filterCategory('all')" id="cat-btn-all" class="cat-btn active flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-sm whitespace-nowrap bg-brand-800 text-gold-400 border border-brand-700">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>Todo el Menú</span>
+                </button>
+                <button onclick="filterCategory('clasicos')" id="cat-btn-clasicos" class="cat-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-sm whitespace-nowrap bg-white text-brand-800 hover:bg-brand-100 border border-brand-200">
+                    <i class="fa-solid fa-mug-hot text-brand-600"></i>
+                    <span>Cafés Clásicos</span>
+                </button>
+                <button onclick="filterCategory('frias')" id="cat-btn-frias" class="cat-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-sm whitespace-nowrap bg-white text-brand-800 hover:bg-brand-100 border border-brand-200">
+                    <i class="fa-solid fa-glass-water text-brand-600"></i>
+                    <span>Frías y Especiales</span>
+                </button>
+                <button onclick="filterCategory('reposteria')" id="cat-btn-reposteria" class="cat-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-sm whitespace-nowrap bg-white text-brand-800 hover:bg-brand-100 border border-brand-200">
+                    <i class="fa-solid fa-cookie text-brand-600"></i>
+                    <span>Panadería y Repostería</span>
+                </button>
+                <button onclick="filterCategory('salados')" id="cat-btn-salados" class="cat-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-sm whitespace-nowrap bg-white text-brand-800 hover:bg-brand-100 border border-brand-200">
+                    <i class="fa-solid fa-utensils text-brand-600"></i>
+                    <span>Salados y Desayunos</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Parrilla de Productos -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Los productos se inyectan dinámicamente mediante JS -->
+        </div>
+
+    </main>
+
+    <!-- MODAL 1: Personalización de Producto -->
+    <div id="customize-modal" class="fixed inset-0 bg-brand-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl border border-brand-200 max-w-lg w-full overflow-hidden transform transition-all duration-300 scale-95 opacity-0 my-8" id="customize-modal-card">
+            
+            <!-- Modal Header -->
+            <div class="relative bg-brand-900 text-white p-5 border-b border-gold-500/30">
+                <button onclick="closeCustomizeModal()" class="absolute top-4 right-4 text-brand-300 hover:text-white bg-brand-800 hover:bg-brand-700 w-8 h-8 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <span id="modal-category-badge" class="text-[10px] uppercase font-bold tracking-widest text-gold-400 bg-brand-800/80 px-2.5 py-1 rounded-md border border-brand-700 inline-block mb-2">Categoría</span>
+                <h3 id="modal-item-title" class="font-serif text-2xl font-bold text-brand-100">Nombre del Producto</h3>
+                <p id="modal-item-desc" class="text-xs text-brand-200 mt-1 font-light leading-relaxed">Descripción detallada del platillo o bebida seleccionada.</p>
+            </div>
+
+            <!-- Modal Content (Opciones) -->
+            <div class="p-5 max-h-[60vh] overflow-y-auto space-y-6">
+                
+                <!-- Opción: Tamaño (Sólo bebidas) -->
+                <div id="section-size" class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-900 flex justify-between">
+                        <span>1. Selecciona el Tamaño <span class="text-red-500">*</span></span>
+                    </label>
+                    <div class="grid grid-cols-3 gap-2" id="options-size">
+                        <!-- Generado en JS -->
+                    </div>
+                </div>
+
+                <!-- Opción: Tipo de Leche (Bebidas con leche) -->
+                <div id="section-milk" class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-900">
+                        2. Tipo de Leche
+                    </label>
+                    <select id="option-milk-select" onchange="recalculateModalPrice()" class="w-full bg-brand-50 border border-brand-200 rounded-xl px-3 py-2.5 text-sm font-medium text-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="Entera (Tradicional)">Entera (Tradicional) - Sin costo</option>
+                        <option value="Deslactosada">Deslactosada - Sin costo</option>
+                        <option value="Deslactosada Light">Deslactosada Light - Sin costo</option>
+                        <option value="Almendra">Leche de Almendra (+ $12.00)</option>
+                        <option value="Avena">Leche de Avena (+ $12.00)</option>
+                        <option value="Coco">Leche de Coco (+ $12.00)</option>
+                    </select>
+                </div>
+
+                <!-- Opción: Nivel de Azúcar/Dulzura -->
+                <div id="section-sugar" class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-900">
+                        3. Nivel de Dulzura
+                    </label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="sugar" value="100%" checked class="peer hidden">
+                            <div class="text-center p-2 rounded-xl border border-brand-200 peer-checked:border-brand-600 peer-checked:bg-brand-100 peer-checked:text-brand-900 text-xs font-medium text-brand-700 transition">
+                                Normal
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="sugar" value="50%" class="peer hidden">
+                            <div class="text-center p-2 rounded-xl border border-brand-200 peer-checked:border-brand-600 peer-checked:bg-brand-100 peer-checked:text-brand-900 text-xs font-medium text-brand-700 transition">
+                                Media (50%)
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="sugar" value="Poco" class="peer hidden">
+                            <div class="text-center p-2 rounded-xl border border-brand-200 peer-checked:border-brand-600 peer-checked:bg-brand-100 peer-checked:text-brand-900 text-xs font-medium text-brand-700 transition">
+                                Poco
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="sugar" value="Sin Azúcar" class="peer hidden">
+                            <div class="text-center p-2 rounded-xl border border-brand-200 peer-checked:border-brand-600 peer-checked:bg-brand-100 peer-checked:text-brand-900 text-xs font-medium text-brand-700 transition">
+                                Sin Azúcar
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Extras y Toppings -->
+                <div id="section-extras" class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-900">
+                        4. Extras opcionales
+                    </label>
+                    <div class="space-y-2" id="options-extras-container">
+                        <!-- Checkboxes inyectados por JS -->
+                    </div>
+                </div>
+
+                <!-- Instrucciones Especiales -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-900 flex items-center justify-between">
+                        <span>Notas para Cocina</span>
+                        <span class="text-[10px] text-brand-500 font-normal">Opcional</span>
+                    </label>
+                    <textarea id="modal-notes" rows="2" placeholder="Ej. Muy caliente, empaque separado, sin canela en polvo..." class="w-full bg-brand-50 border border-brand-200 rounded-xl p-3 text-xs text-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"></textarea>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="flex items-center justify-between pt-2 border-t border-brand-100">
+                    <span class="text-sm font-bold text-brand-900">Cantidad:</span>
+                    <div class="flex items-center space-x-3 bg-brand-100 p-1.5 rounded-xl border border-brand-200">
+                        <button onclick="adjustModalQty(-1)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-brand-900 font-bold hover:bg-brand-200 transition">-</button>
+                        <span id="modal-qty" class="font-bold text-brand-900 w-6 text-center text-sm">1</span>
+                        <button onclick="adjustModalQty(1)" class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-brand-900 font-bold hover:bg-brand-200 transition">+</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-brand-50 border-t border-brand-200 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] uppercase text-brand-600 font-bold tracking-wider">Precio Unitario Calculado</p>
+                    <p id="modal-calculated-price" class="text-xl font-bold text-brand-900">$0.00</p>
+                </div>
+                <button onclick="confirmAddToCart()" class="bg-gradient-to-r from-brand-700 to-brand-900 hover:from-brand-800 hover:to-brand-950 text-gold-400 font-bold px-6 py-3 rounded-xl shadow-lg transition duration-200 flex items-center space-x-2 border border-gold-500/30">
+                    <i class="fa-solid fa-plus text-sm"></i>
+                    <span>Agregar al Pedido</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL 2: Carrito de Compras & Desglose -->
+    <div id="cart-modal" class="fixed inset-0 bg-brand-950/70 backdrop-blur-sm z-50 flex justify-end hidden transition-opacity duration-300">
+        <div class="bg-brand-50 w-full max-w-md h-full shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-full" id="cart-drawer">
+            
+            <!-- Cart Header -->
+            <div class="bg-brand-950 text-white p-5 flex items-center justify-between border-b border-gold-500/40">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-receipt text-gold-500 text-xl"></i>
+                    <div>
+                        <h3 class="font-serif text-xl font-bold text-brand-100">Resumen de Tu Pedido</h3>
+                        <p class="text-xs text-brand-300">Revisa tus productos antes de confirmar</p>
+                    </div>
+                </div>
+                <button onclick="toggleCartModal()" class="text-brand-300 hover:text-white bg-brand-900 p-2 rounded-full w-8 h-8 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cart Body -->
+            <div class="flex-grow overflow-y-auto p-5 space-y-4">
+                
+                <!-- Selector Tipo de Pedido: Para Llevar vs En Mesa -->
+                <div class="bg-white p-3.5 rounded-xl border border-brand-200 shadow-sm space-y-3">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-900">
+                        <i class="fa-solid fa-utensils text-gold-600 mr-1"></i> Modalidad de Entrega
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="btn-mode-table" onclick="setOrderMode('table')" class="py-2.5 px-3 rounded-lg border border-brand-700 bg-brand-800 text-white font-medium text-xs flex items-center justify-center space-x-2 transition">
+                            <i class="fa-solid fa-chair"></i>
+                            <span>En Mesa</span>
+                        </button>
+                        <button type="button" id="btn-mode-takeout" onclick="setOrderMode('takeout')" class="py-2.5 px-3 rounded-lg border border-brand-200 bg-white text-brand-800 font-medium text-xs flex items-center justify-center space-x-2 transition">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span>Para Llevar</span>
+                        </button>
+                    </div>
+
+                    <!-- Input para número de Mesa -->
+                    <div id="table-number-container" class="pt-2">
+                        <label class="block text-[11px] font-semibold text-brand-700 mb-1">Número de Mesa:</label>
+                        <select id="select-table-num" class="w-full bg-brand-50 border border-brand-200 rounded-lg p-2 text-xs font-bold text-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="Mesa 1 (Interior)">Mesa 1 - Salón Principal</option>
+                            <option value="Mesa 2 (Interior)">Mesa 2 - Salón Principal</option>
+                            <option value="Mesa 3 (Ventana)">Mesa 3 - Junto a la Ventana</option>
+                            <option value="Mesa 4 (Terraza)">Mesa 4 - Terraza Colonial</option>
+                            <option value="Mesa 5 (Terraza)">Mesa 5 - Terraza Colonial</option>
+                            <option value="Mesa 6 (Patio)">Mesa 6 - Patio de las Fuentes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Lista de items en el carrito -->
+                <div id="cart-items-container" class="space-y-3">
+                    <!-- Items dinámicos -->
+                </div>
+
+                <!-- Carrito vacío state -->
+                <div id="empty-cart-view" class="text-center py-12 space-y-3">
+                    <div class="w-16 h-16 bg-brand-100 text-brand-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-mug-saucer"></i>
+                    </div>
+                    <p class="font-serif text-lg font-bold text-brand-900">Tu carrito está vacío</p>
+                    <p class="text-xs text-brand-600 max-w-xs mx-auto">Selecciona algún café artesanal o repostería tradicional para comenzar tu orden.</p>
+                </div>
+
+                <!-- Comentarios Generales para la cocina -->
+                <div id="cart-notes-section" class="bg-white p-3.5 rounded-xl border border-brand-200 shadow-sm hidden">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-900 mb-1.5 flex items-center">
+                        <i class="fa-solid fa-comment-dots text-gold-600 mr-1.5"></i> Notas Generales del Pedido
+                    </label>
+                    <input type="text" id="general-order-notes" placeholder="Ej. Traer todo junto, servilletas extra..." class="w-full bg-brand-50 border border-brand-200 rounded-lg px-3 py-2 text-xs text-brand-900 focus:outline-none focus:ring-1 focus:ring-brand-500">
+                </div>
+
+            </div>
+
+            <!-- Cart Footer / Desglose de Pago -->
+            <div id="cart-summary-footer" class="bg-white p-5 border-t border-brand-200 shadow-lg space-y-3 hidden">
+                <div class="space-y-1.5 text-xs text-brand-700">
+                    <div class="flex justify-between">
+                        <span>Subtotal:</span>
+                        <span id="summary-subtotal" class="font-medium">$0.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>IVA / Impuestos (16% incl.):</span>
+                        <span id="summary-tax" class="font-medium">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-base font-bold text-brand-950 pt-2 border-t border-brand-100">
+                        <span>Total a Pagar:</span>
+                        <span id="summary-total" class="text-brand-900 text-lg">$0.00</span>
+                    </div>
+                </div>
+
+                <button onclick="processCheckout()" class="w-full bg-gradient-to-r from-gold-500 to-brand-600 hover:from-gold-600 hover:to-brand-700 text-brand-950 font-bold py-3.5 px-4 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 border border-gold-400">
+                    <span>Confirmar y Enviar Pedido</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL 3: Confirmación / Ticket de Pedido -->
+    <div id="ticket-modal" class="fixed inset-0 bg-brand-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl border border-brand-200 max-w-md w-full p-6 text-center space-y-5 relative my-8">
+            
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner border border-green-200">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <div>
+                <span class="text-xs uppercase font-bold text-gold-600 tracking-widest bg-gold-50 px-3 py-1 rounded-full border border-gold-200">¡Pedido Confirmado!</span>
+                <h3 class="font-serif text-2xl font-bold text-brand-950 mt-2">Gracias por tu preferencia</h3>
+                <p class="text-xs text-brand-600 mt-1">Tu orden ha sido enviada directamente a la cocina de Café Colonial.</p>
+            </div>
+
+            <!-- Ticket Recibo Visual -->
+            <div class="bg-brand-50 p-4 rounded-xl border border-dashed border-brand-300 text-left space-y-3 font-mono text-xs text-brand-900">
+                <div class="text-center pb-2 border-b border-brand-200">
+                    <p class="font-bold text-sm font-serif">CAFÉ COLONIAL S.A.</p>
+                    <p class="text-[10px] text-brand-600">Ticket de Comanda Digital</p>
+                </div>
+                
+                <div class="flex justify-between text-[11px]">
+                    <span>No. Orden: <strong id="ticket-order-id" class="text-brand-950">#COL-0000</strong></span>
+                    <span id="ticket-date">--/--/----</span>
+                </div>
+                
+                <div class="flex justify-between text-[11px]">
+                    <span>Modalidad: <strong id="ticket-mode" class="text-brand-950">Mesa</strong></span>
+                    <span>Tiempo Est.: <strong id="ticket-eta" class="text-brand-800">12 min</strong></span>
+                </div>
+
+                <div id="ticket-items-list" class="py-2 border-t border-b border-brand-200 space-y-1.5 max-h-36 overflow-y-auto">
+                    <!-- Items ticket -->
+                </div>
+
+                <div class="flex justify-between font-bold text-sm pt-1">
+                    <span>TOTAL PAGADO:</span>
+                    <span id="ticket-total">$0.00</span>
+                </div>
+            </div>
+
+            <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 text-xs flex items-center space-x-3">
+                <i class="fa-solid fa-bell text-amber-600 text-lg"></i>
+                <p class="text-left leading-tight">Te notificaremos cuando tu orden esté lista. ¡Acomódate y disfruta el ambiente!</p>
+            </div>
+
+            <button onclick="resetApp()" class="w-full bg-brand-900 hover:bg-brand-950 text-gold-400 font-bold py-3 rounded-xl shadow transition">
+                Hacer Otro Pedido
+            </button>
+
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS DEL MENÚ
+        const MENU_DATA = [
+            {
+                id: 'c1',
+                name: 'Espresso Tradicional',
+                category: 'clasicos',
+                price: 38.00,
+                description: 'Extracción concentrada de café 100% Arábica de altura con crema avellanada denso y aroma penetrante.',
+                image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: false
+            },
+            {
+                id: 'c2',
+                name: 'Café de Olla Colonial',
+                category: 'clasicos',
+                price: 45.00,
+                description: 'Receta histórica elaborada en olla de barro con piloncillo, canela fina en rama y un toque de clavo de olor.',
+                image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: true
+            },
+            {
+                id: 'c3',
+                name: 'Cappuccino Italiano',
+                category: 'clasicos',
+                price: 58.00,
+                description: 'Espresso perfectamente equilibrado con leche al vapor y una capa generosa de espuma terciopelada con canela.',
+                image: 'https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=600&q=80',
+                hasMilk: true,
+                popular: true
+            },
+            {
+                id: 'c4',
+                name: 'Café Latte Cremoso',
+                category: 'clasicos',
+                price: 55.00,
+                description: 'Suave combinación de espresso con abundante leche vaporizada y una ligera capa de espuma de leche.',
+                image: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&w=600&q=80',
+                hasMilk: true,
+                popular: false
+            },
+            {
+                id: 'c5',
+                name: 'Café Americano de Tueste Oscuro',
+                category: 'clasicos',
+                price: 42.00,
+                description: 'Espresso diluido en agua caliente manteniendo las notas chocolatadas y amaderadas del grano recién molido.',
+                image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: false
+            },
+            {
+                id: 'f1',
+                name: 'Cold Brew Artesanal',
+                category: 'frias',
+                price: 65.00,
+                description: 'Café infusionado en frío durante 18 horas. Sabor suave, baja acidez y notas dulces a cacao.',
+                image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: true
+            },
+            {
+                id: 'f2',
+                name: 'Frappé Mochaccino de la Casa',
+                category: 'frias',
+                price: 72.00,
+                description: 'Bebida helada frapeada con espresso, chocolate artesanal, crema batida y jarabe de chocolate casero.',
+                image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80',
+                hasMilk: true,
+                popular: true
+            },
+            {
+                id: 'f3',
+                name: 'Infusión Herbal de Manzanilla y Miel',
+                category: 'frias',
+                price: 48.00,
+                description: 'Selección de flores de manzanilla silvestre infusionadas con miel de abeja pura y toque de limón.',
+                image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: false
+            },
+            {
+                id: 'r1',
+                name: 'Concha Tradicional de Vainilla o Chocolate',
+                category: 'reposteria',
+                price: 28.00,
+                description: 'Pan dulce artesanal esponjoso con cubierta crujiente de azúcar aromatizada con vainilla natural.',
+                image: 'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: true
+            },
+            {
+                id: 'r2',
+                name: 'Croissant de Mantequilla',
+                category: 'reposteria',
+                price: 42.00,
+                description: 'Hojaldre tradicional horneado diariamente con mantequilla pura, doradito y crujiente.',
+                image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: false
+            },
+            {
+                id: 'r3',
+                name: 'Rebanada de Pastel de Zanahoria',
+                category: 'reposteria',
+                price: 68.00,
+                description: 'Pastel casero con nuez moscada, canela, nueces tostadas y betún de queso crema suave.',
+                image: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: true
+            },
+            {
+                id: 's1',
+                name: 'Molletes Colonial con Queso Gratinado',
+                category: 'salados',
+                price: 85.00,
+                description: 'Telera artesanal untada con frijoles refritos de la casa, queso manchego derretido y pico de gallo fresco.',
+                image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: true
+            },
+            {
+                id: 's2',
+                name: 'Sándwich Clásico de Jamón Serrano y Queso',
+                category: 'salados',
+                price: 110.00,
+                description: 'Pan rústico de masa madre, jamón serrano curado, queso gouda, jitomate deshidratado y aderezo de finas hierbas.',
+                image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80',
+                hasMilk: false,
+                popular: false
+            }
+        ];
+
+        // ESTADO DE LA APLICACIÓN
+        let cart = [];
+        let currentCategory = 'all';
+        let selectedProductForModal = null;
+        let selectedSize = { name: 'Regular (350ml)', extraPrice: 0 };
+        let modalQuantity = 1;
+        let orderMode = 'table';
+
+        // INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateCartUI();
+        });
+
+        // FILTRADO DE PRODUCTOS
+        function filterCategory(cat) {
+            currentCategory = cat;
+            
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-800', 'text-gold-400', 'border-brand-700');
+                btn.classList.add('bg-white', 'text-brand-800', 'border-brand-200');
+            });
+
+            const activeBtn = document.getElementById(`cat-btn-${cat}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-brand-800', 'border-brand-200');
+                activeBtn.classList.add('bg-brand-800', 'text-gold-400', 'border-brand-700');
+            }
+
+            renderProducts();
+        }
+
+        // RENDERIZAR PARRILLA
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            const filtered = currentCategory === 'all' 
+                ? MENU_DATA 
+                : MENU_DATA.filter(p => p.category === currentCategory);
+
+            filtered.forEach(product => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-brand-200/80 transition duration-300 flex flex-col justify-between group";
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-48 overflow-hidden bg-brand-100">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/600x400/321f17/dec7a7?text=Cafe+Colonial'">
+                            ${product.popular ? `
+                                <span class="absolute top-3 left-3 bg-gold-500 text-brand-950 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
+                                    <i class="fa-solid fa-star mr-1"></i> Favorito
+                                </span>
+                            ` : ''}
+                            <span class="absolute bottom-3 right-3 bg-brand-950/80 backdrop-blur-md text-gold-400 font-bold text-sm px-3 py-1 rounded-lg border border-gold-500/30">
+                                $${product.price.toFixed(2)}
+                            </span>
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <h3 class="font-serif font-bold text-lg text-brand-950 group-hover:text-brand-700 transition">${product.name}</h3>
+                            <p class="text-xs text-brand-600 font-light leading-relaxed line-clamp-2">${product.description}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <button onclick="openCustomizeModal('${product.id}')" class="w-full bg-brand-100 hover:bg-brand-800 text-brand-900 hover:text-gold-400 font-semibold py-2.5 px-4 rounded-xl border border-brand-200 hover:border-brand-700 transition duration-200 flex items-center justify-center space-x-2 text-xs">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span>Personalizar y Agregar</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ABRIR MODAL
+        function openCustomizeModal(productId) {
+            const product = MENU_DATA.find(p => p.id === productId);
+            if (!product) return;
+
+            selectedProductForModal = product;
+            modalQuantity = 1;
+            selectedSize = { name: 'Regular (350ml)', extraPrice: 0 };
+
+            document.getElementById('modal-item-title').innerText = product.name;
+            document.getElementById('modal-item-desc').innerText = product.description;
+            document.getElementById('modal-category-badge').innerText = getCategoryLabel(product.category);
+            document.getElementById('modal-qty').innerText = modalQuantity;
+            document.getElementById('modal-notes').value = '';
+
+            const isBeverage = product.category === 'clasicos' || product.category === 'frias';
+            document.getElementById('section-size').style.display = isBeverage ? 'block' : 'none';
+            document.getElementById('section-milk').style.display = product.hasMilk ? 'block' : 'none';
+            document.getElementById('section-sugar').style.display = isBeverage ? 'block' : 'none';
+
+            const sizeContainer = document.getElementById('options-size');
+            sizeContainer.innerHTML = '';
+            if (isBeverage) {
+                const sizes = [
+                    { name: 'Chico (250ml)', extra: 0 },
+                    { name: 'Regular (350ml)', extra: 8 },
+                    { name: 'Grande (470ml)', extra: 16 }
+                ];
+                sizes.forEach((s, idx) => {
+                    const isChecked = idx === 0 ? 'checked' : '';
+                    if (idx === 0) selectedSize = { name: s.name, extraPrice: s.extra };
+                    
+                    sizeContainer.innerHTML += `
+                        <label class="cursor-pointer">
+                            <input type="radio" name="modal-size-radio" value="${s.extra}" ${isChecked} onchange="updateModalSize('${s.name}', ${s.extra})" class="peer hidden">
+                            <div class="text-center p-2 rounded-xl border border-brand-200 peer-checked:border-brand-600 peer-checked:bg-brand-100 peer-checked:text-brand-900 transition">
+                                <p class="text-xs font-bold text-brand-900">${s.name.split(' ')[0]}</p>
+                                <p class="text-[10px] text-brand-600">+ $${s.extra.toFixed(2)}</p>
+                            </div>
+                        </label>
+                    `;
+                });
+            }
+
+            const extrasContainer = document.getElementById('options-extras-container');
+            extrasContainer.innerHTML = '';
+            let extrasList = isBeverage ? [
+                { id: 'ext-whip', name: 'Crema Batida Artesanal', price: 12.00 },
+                { id: 'ext-shot', name: 'Shot Extra de Espresso', price: 15.00 },
+                { id: 'ext-syrup', name: 'Jarabe de Vainilla / Caramel', price: 10.00 },
+                { id: 'ext-cinnamon', name: 'Especia Canela Extra', price: 0.00 }
+            ] : [
+                { id: 'ext-butter', name: 'Mantequilla Adicional', price: 8.00 },
+                { id: 'ext-jam', name: 'Mermelada de Fresa Casera', price: 10.00 },
+                { id: 'ext-cheese', name: 'Queso Extra', price: 15.00 }
+            ];
+
+            extrasList.forEach(ext => {
+                extrasContainer.innerHTML += `
+                    <label class="flex items-center justify-between p-2 rounded-lg hover:bg-brand-50 border border-brand-100 cursor-pointer">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" data-price="${ext.price}" data-name="${ext.name}" onchange="recalculateModalPrice()" class="extra-checkbox rounded text-brand-700 focus:ring-brand-500 h-4 w-4">
+                            <span class="text-xs font-medium text-brand-900">${ext.name}</span>
+                        </div>
+                        <span class="text-xs text-brand-600 font-semibold">${ext.price > 0 ? '+ $' + ext.price.toFixed(2) : 'Gratis'}</span>
+                    </label>
+                `;
+            });
+
+            recalculateModalPrice();
+
+            const modal = document.getElementById('customize-modal');
+            const card = document.getElementById('customize-modal-card');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeCustomizeModal() {
+            const modal = document.getElementById('customize-modal');
+            const card = document.getElementById('customize-modal-card');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function updateModalSize(name, extraPrice) {
+            selectedSize = { name, extraPrice };
+            recalculateModalPrice();
+        }
+
+        function adjustModalQty(delta) {
+            modalQuantity = Math.max(1, modalQuantity + delta);
+            document.getElementById('modal-qty').innerText = modalQuantity;
+            recalculateModalPrice();
+        }
+
+        function recalculateModalPrice() {
+            if (!selectedProductForModal) return;
+
+            let unitPrice = selectedProductForModal.price;
+
+            if (selectedSize) {
+                unitPrice += selectedSize.extraPrice;
+            }
+
+            const milkSelect = document.getElementById('option-milk-select');
+            if (selectedProductForModal.hasMilk && milkSelect) {
+                if (milkSelect.value === 'Almendra' || milkSelect.value === 'Avena' || milkSelect.value === 'Coco') {
+                    unitPrice += 12.00;
+                }
+            }
+
+            const checkedExtras = document.querySelectorAll('.extra-checkbox:checked');
+            checkedExtras.forEach(cb => {
+                unitPrice += parseFloat(cb.getAttribute('data-price') || 0);
+            });
+
+            const totalPrice = unitPrice * modalQuantity;
+            document.getElementById('modal-calculated-price').innerText = `$${totalPrice.toFixed(2)}`;
+            return { unitPrice, totalPrice };
+        }
+
+        function confirmAddToCart() {
+            if (!selectedProductForModal) return;
+
+            const isBeverage = selectedProductForModal.category === 'clasicos' || selectedProductForModal.category === 'frias';
+            const selectedMilk = selectedProductForModal.hasMilk ? document.getElementById('option-milk-select').value : null;
+            
+            let selectedSugar = null;
+            if (isBeverage) {
+                const sugarRadio = document.querySelector('input[name="sugar"]:checked');
+                selectedSugar = sugarRadio ? sugarRadio.value : 'Normal';
+            }
+
+            const extras = [];
+            document.querySelectorAll('.extra-checkbox:checked').forEach(cb => {
+                extras.push(cb.getAttribute('data-name'));
+            });
+
+            const notes = document.getElementById('modal-notes').value.trim();
+            const prices = recalculateModalPrice();
+
+            const cartItem = {
+                cartItemId: Date.now().toString(),
+                productId: selectedProductForModal.id,
+                name: selectedProductForModal.name,
+                basePrice: selectedProductForModal.price,
+                unitPrice: prices.unitPrice,
+                quantity: modalQuantity,
+                size: isBeverage ? selectedSize.name : null,
+                milk: selectedMilk,
+                sugar: selectedSugar,
+                extras: extras,
+                notes: notes
+            };
+
+            cart.push(cartItem);
+            updateCartUI();
+            closeCustomizeModal();
+            showToast(`¡${selectedProductForModal.name} agregado al pedido!`);
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cart-badge');
+            const headerTotal = document.getElementById('cart-header-total');
+            const cartContainer = document.getElementById('cart-items-container');
+            const emptyView = document.getElementById('empty-cart-view');
+            const cartFooter = document.getElementById('cart-summary-footer');
+            const cartNotesSec = document.getElementById('cart-notes-section');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+
+            if (totalItems > 0) {
+                badge.innerText = totalItems;
+                badge.classList.remove('hidden');
+                headerTotal.innerText = `$${subtotal.toFixed(2)}`;
+            } else {
+                badge.classList.add('hidden');
+                headerTotal.innerText = '$0.00';
+            }
+
+            cartContainer.innerHTML = '';
+            if (cart.length === 0) {
+                emptyView.classList.remove('hidden');
+                cartFooter.classList.add('hidden');
+                cartNotesSec.classList.add('hidden');
+            } else {
+                emptyView.classList.add('hidden');
+                cartFooter.classList.remove('hidden');
+                cartNotesSec.classList.remove('hidden');
+
+                cart.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = "bg-white p-3.5 rounded-xl border border-brand-200 shadow-sm flex flex-col justify-between space-y-2";
+                    
+                    let detailsHTML = '';
+                    if (item.size) detailsHTML += `<span class="bg-brand-100 text-brand-800 px-1.5 py-0.5 rounded">${item.size}</span> `;
+                    if (item.milk) detailsHTML += `<span class="bg-brand-100 text-brand-800 px-1.5 py-0.5 rounded">Leche: ${item.milk}</span> `;
+                    if (item.sugar) detailsHTML += `<span class="bg-brand-100 text-brand-800 px-1.5 py-0.5 rounded">Azúcar: ${item.sugar}</span> `;
+
+                    itemEl.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-sm text-brand-950">${item.name}</h4>
+                                <p class="text-xs text-brand-700 font-semibold">$${item.unitPrice.toFixed(2)} c/u</p>
+                            </div>
+                            <button onclick="removeFromCart('${item.cartItemId}')" class="text-red-400 hover:text-red-600 text-xs p-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+
+                        ${detailsHTML ? `<div class="text-[10px] text-brand-600 space-x-1 space-y-1">${detailsHTML}</div>` : ''}
+                        
+                        ${item.extras.length > 0 ? `
+                            <p class="text-[10px] text-brand-600"><strong>Extras:</strong> ${item.extras.join(', ')}</p>
+                        ` : ''}
+
+                        ${item.notes ? `
+                            <p class="text-[10px] text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200">
+                                <i class="fa-regular fa-comment mr-1"></i>"${item.notes}"
+                            </p>
+                        ` : ''}
+
+                        <div class="flex justify-between items-center pt-2 border-t border-brand-100">
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateCartItemQty('${item.cartItemId}', -1)" class="w-6 h-6 rounded bg-brand-100 text-brand-900 font-bold text-xs flex items-center justify-center hover:bg-brand-200">-</button>
+                                <span class="text-xs font-bold text-brand-900 w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateCartItemQty('${item.cartItemId}', 1)" class="w-6 h-6 rounded bg-brand-100 text-brand-900 font-bold text-xs flex items-center justify-center hover:bg-brand-200">+</button>
+                            </div>
+                            <span class="font-bold text-sm text-brand-950">$${(item.unitPrice * item.quantity).toFixed(2)}</span>
+                        </div>
+                    `;
+                    cartContainer.appendChild(itemEl);
+                });
+            }
+
+            const tax = subtotal * 0.16;
+            document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('summary-tax').innerText = `$${tax.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `$${subtotal.toFixed(2)}`;
+        }
+
+        function removeFromCart(cartItemId) {
+            cart = cart.filter(item => item.cartItemId !== cartItemId);
+            updateCartUI();
+        }
+
+        function updateCartItemQty(cartItemId, delta) {
+            const item = cart.find(i => i.cartItemId === cartItemId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(cartItemId);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        function setOrderMode(mode) {
+            orderMode = mode;
+            const btnTable = document.getElementById('btn-mode-table');
+            const btnTakeout = document.getElementById('btn-mode-takeout');
+            const tableContainer = document.getElementById('table-number-container');
+
+            if (mode === 'table') {
+                btnTable.className = "py-2.5 px-3 rounded-lg border border-brand-700 bg-brand-800 text-white font-medium text-xs flex items-center justify-center space-x-2 transition";
+                btnTakeout.className = "py-2.5 px-3 rounded-lg border border-brand-200 bg-white text-brand-800 font-medium text-xs flex items-center justify-center space-x-2 transition";
+                tableContainer.style.display = 'block';
+            } else {
+                btnTakeout.className = "py-2.5 px-3 rounded-lg border border-brand-700 bg-brand-800 text-white font-medium text-xs flex items-center justify-center space-x-2 transition";
+                btnTable.className = "py-2.5 px-3 rounded-lg border border-brand-200 bg-white text-brand-800 font-medium text-xs flex items-center justify-center space-x-2 transition";
+                tableContainer.style.display = 'none';
+            }
+        }
+
+        function toggleCartModal() {
+            const modal = document.getElementById('cart-modal');
+            const drawer = document.getElementById('cart-drawer');
+
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    drawer.classList.remove('translate-x-full');
+                }, 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function processCheckout() {
+            if (cart.length === 0) return;
+
+            const randomOrderId = '#COL-' + Math.floor(1000 + Math.random() * 9000);
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const tableNum = orderMode === 'table' ? document.getElementById('select-table-num').value : 'Para Llevar';
+            const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+            const estimatedMinutes = Math.floor(8 + Math.random() * 8);
+
+            document.getElementById('ticket-order-id').innerText = randomOrderId;
+            document.getElementById('ticket-date').innerText = dateStr;
+            document.getElementById('ticket-mode').innerText = tableNum;
+            document.getElementById('ticket-eta').innerText = `~${estimatedMinutes} min`;
+            document.getElementById('ticket-total').innerText = `$${subtotal.toFixed(2)}`;
+
+            const itemsContainer = document.getElementById('ticket-items-list');
+            itemsContainer.innerHTML = '';
+
+            cart.forEach(item => {
+                itemsContainer.innerHTML += `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-bold text-brand-950">${item.quantity}x ${item.name}</p>
+                            ${item.size ? `<p class="text-[9px] text-brand-600">${item.size}</p>` : ''}
+                        </div>
+                        <span class="font-bold text-brand-900">$${(item.unitPrice * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            toggleCartModal();
+            
+            setTimeout(() => {
+                document.getElementById('ticket-modal').classList.remove('hidden');
+            }, 300);
+        }
+
+        function resetApp() {
+            cart = [];
+            updateCartUI();
+            document.getElementById('ticket-modal').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getCategoryLabel(cat) {
+            switch(cat) {
+                case 'clasicos': return 'Café Clásico';
+                case 'frias': return 'Bebida Fría / Especial';
+                case 'reposteria': return 'Panadería Tradicional';
+                case 'salados': return 'Desayuno & Salado';
+                default: return 'Especialidad';
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-5 right-5 bg-brand-950 text-gold-400 px-4 py-3 rounded-xl shadow-2xl border border-gold-500/40 text-xs font-bold z-50 flex items-center space-x-2 animate-bounce";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-green-400 text-sm"></i> <span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
